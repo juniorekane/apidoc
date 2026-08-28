@@ -2,7 +2,18 @@ package com.jek_dev.apidoc.entities;
 
 
 import com.jek_dev.apidoc.enums.Role;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +21,15 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Repraesentiert einen Benutzer der API-Dokumentations-Plattform.
+ * Ein {@code User} kann {@link ApiDoc}-Eintraege erstellen, aktualisieren
+ * und loeschen (siehe {@link ApiDoc#getCreatedBy()}, {@link ApiDoc#getUpdatedBy()},
+ * {@link ApiDoc#getDeletedBy()}, sowie {@link ReviewRequest}s stellen und pruefen.
+ * Die {@link Role} steuert die Berechtigungen innerhalb der Plattform.
+ *
+ * @author Danielle Matcheu
+ */
 @Entity
 @Table(name = "user")
 @Getter
