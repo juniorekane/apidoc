@@ -1,0 +1,21 @@
+stages:
+  - lint
+  - compile
+  - test
+default:
+  tags:
+    - high-speed-runner
+
+.maven_image: &maven_image
+  name: maven:3.9-eclipse-temurin-25
+  entrypoint: [""]
+
+Backend:Format:Check:
+  stage: lint
+  image: *maven_image
+  variables:
+    WORK_DIR: $CI_PROJECT_DIR/backend
+  before_script:
+    - cd $WORK_DIR
+  script:
+    - mvn formatter:validates
