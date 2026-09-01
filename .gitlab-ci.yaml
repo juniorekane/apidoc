@@ -1,0 +1,26 @@
+default:
+  tags:
+    - high-speed-runner
+
+stages:
+  - lint
+  - compile
+  - test
+
+.maven_image: &maven_image
+  name: maven:3.9-eclipse-temurin-25
+  entrypoint: [""]
+
+Backend:Format:Check:
+  stage: lint
+  image: *maven_image
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_REF_SLUG != "protected"
+      when: always
+    - when: never
+  variables:
+    WORK_DIR: $CI_PROJECT_DIR/backend
+  before_script:
+    - cd $WORK_DIR
+  script:
+    - mvn formatter:validates
