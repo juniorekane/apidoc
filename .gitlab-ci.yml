@@ -17,10 +17,12 @@ Backend:Format:Check:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_REF_SLUG != "protected"
       when: always
+    - if: $CI_PIPELINE_SOURCE == "push"
+      when: never
     - when: never
   variables:
     WORK_DIR: $CI_PROJECT_DIR/backend
   before_script:
     - cd $WORK_DIR
   script:
-    - mvn formatter:validates
+    - mvn formatter:validate
