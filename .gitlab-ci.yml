@@ -4,7 +4,7 @@ default:
 
 stages:
   - lint
-  - .pre
+  - prepare
   - build
 
 include:
@@ -13,8 +13,7 @@ include:
       working_dir: "$CI_PROJECT_DIR/backend"
   - component: $CI_SERVER_FQDN/jek-dev/devops/components/maven/maven-pull-dependencies@0.1.0
     inputs:
-      job_needs:
-        - "Maven:Syntax-Check"
+      job_stage: "prepare"
       working_dir: "$CI_PROJECT_DIR/backend"
   - component: $CI_SERVER_FQDN/jek-dev/devops/components/maven/maven-build@0.1.0
     inputs:
