@@ -4,25 +4,24 @@ default:
 
 stages:
   - lint
-  - compile
-  - test
+  - .pre
+  - build
 
-.maven_image: &maven_image
-  name: maven:3.9-eclipse-temurin-25
-  entrypoint: [""]
-
-Backend:Format:Check:
-  stage: lint
-  image: *maven_image
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_REF_SLUG != "protected"
-      when: always
-    - if: $CI_PIPELINE_SOURCE == "push"
-      when: never
-    - when: never
-  variables:
-    WORK_DIR: $CI_PROJECT_DIR/backend
-  before_script:
-    - cd $WORK_DIR
-  script:
-    - mvn formatter:validate
+include:
+  - component: $CI_SERVER_FQDN/jek-dev/devops/components/maven/maven-syntax-check@0.1.0
+    inputs:
+      working_dir: "$CI_PROJECT_DIR/backend"
+  - component: $CI_SERVER_FQDN/jek-dev/devops/components/maven/maven-pull-dependencies@0.1.0
+    inputs:
+      job_needs:
+        - "Maven:Syntax-Check"
+      working_dir: "$CI_PROJECT_DIR/backend"
+  - component: $CI_SERVER_FQDN/jek-dev/devops/components/maven/maven-build@0.1.0
+    inputs:
+      working_dir: "$CI_PROJECT_DIR/backend"
+      artefact_expire: "7 days"
+      artefact_path:
+        - $CI_PROJECT_DIR/backend/target/*.jar
+        - $CI_PROJECT_DIR/backend/pom.xml
+        - $CI_PROJECT_DIR/backend/target/classes
+      
