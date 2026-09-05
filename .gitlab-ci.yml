@@ -14,13 +14,16 @@ include:
   - component: $CI_SERVER_FQDN/jek-dev/devops/components/maven/maven-pull-dependencies@0.1.0
     inputs:
       job_stage: "prepare"
+      job_needs:
+        - job: Maven:Syntax-Check
       working_dir: "$CI_PROJECT_DIR/backend"
   - component: $CI_SERVER_FQDN/jek-dev/devops/components/maven/maven-build@0.1.0
     inputs:
       working_dir: "$CI_PROJECT_DIR/backend"
       artefact_expire: "7 days"
+      job_needs:
+        - job: Maven:Pull-Dependencies
       artefact_path:
         - $CI_PROJECT_DIR/backend/target/*.jar
-        - $CI_PROJECT_DIR/backend/pom.xml
-        - $CI_PROJECT_DIR/backend/target/classes
+      maven_options: "package -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
       
